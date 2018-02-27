@@ -24,13 +24,13 @@ bool relayState;
 
 MyMessage msg(CHILD_ID,V_LIGHT);
 
-#include <avdweb_Switch.h>
+#include <Button.h>
 #include <pair.h>
 
 #define SET_BUTTON_PIN 4
 #define SET_LED_PIN 6    // led indicator that will flash when in pairing mode, comment out to disable
 #define SET_LED_PIN 6    // led indicator that will flash when in pairing mode, comment out to disable
-PairNodeLocal pairLocal = PairNodeLocal(SET_BUTTON_PIN, 6);
+PairNodeLocal pairLocal = PairNodeLocal(SET_BUTTON_PIN, 6, LEDANODE);
 
 // I think send to controller the button regardless if its paired directly 
 void presentation()
@@ -50,13 +50,14 @@ void before()
 
   // Setup the relay
   pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, 1);
-  delay(1000);
-  digitalWrite(RELAY_PIN, 0);
+  //digitalWrite(RELAY_PIN, 1);
+  //delay(1000);
+  //digitalWrite(RELAY_PIN, 0);
 
   // Set relay to last known state (using eeprom storage)
-  relayState = loadState(CHILD_ID);
-  digitalWrite(RELAY_PIN, relayState ? RELAY_ON : RELAY_OFF);
+  //relayState = loadState(CHILD_ID);
+  //digitalWrite(RELAY_PIN, relayState ? RELAY_ON : RELAY_OFF);
+  digitalWrite(RELAY_PIN, 1);
 }
 
 void setup()
@@ -83,7 +84,7 @@ void receive(const MyMessage &message)
       relayState = message.getBool();
       digitalWrite(RELAY_PIN, relayState ? RELAY_ON : RELAY_OFF);
       // Store state in eeprom
-      saveState(CHILD_ID, relayState);
+      //saveState(CHILD_ID, relayState);
       // Write some debug info
       Serial.print("Incoming change. New status:");
       Serial.println(relayState);
@@ -96,6 +97,7 @@ void ChangeRelay()
 	Serial.println("Relay changed state by master node");
 	digitalWrite(RELAY_PIN, relayState ? RELAY_OFF : RELAY_ON);
     relayState = relayState ? 0 : 1;
+  Serial.println("changed relay");
 
     // Save state of relay here if you want
 }

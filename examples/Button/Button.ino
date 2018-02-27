@@ -14,13 +14,13 @@
 
 #define CHILD_ID 3
 
-#include <avdweb_Switch.h>
+#include <Button.h> //https://github.com/JChristensen/Button
 #include <pair.h>
 
 #define SET_BUTTON_PIN 5 // Arduino Digital I/O pin for button/reed switch
 #define SET_LED_PIN 6    // led indicator that will flash when in pairing mode, comment out to disable
 #define BUTTON_PIN 4  // Normal button PIN
-Switch button = Switch(BUTTON_PIN);
+Button button = Button(BUTTON_PIN, true, true, 50);
 
 /* Class which handles all the pairing between nodes, you need to add methods at the begining of 
  * before(), setup(), loop() and recieve() eg pairLocal.before() etc.
@@ -28,7 +28,7 @@ Switch button = Switch(BUTTON_PIN);
  * from its paired master or masters.
  *
  */
-PairNodeLocal pairLocal = PairNodeLocal(SET_BUTTON_PIN, SET_LED_PIN);
+PairNodeLocal pairLocal = PairNodeLocal(SET_BUTTON_PIN, SET_LED_PIN,LEDANODE);
 
 
 // I think send to controller the button regardless if its paired directly 
@@ -60,9 +60,9 @@ void loop()
   pairLocal.loop();
 
   // Process our own sensors additional button, send messages to any paired nodes
-  button.poll();
+  button.read();
   // button was pushed
-  if (button.pushed()) {   
+  if (button.wasPressed()) {   
     if (pairLocal.isPaired()) 
       pairLocal.sendPairedMesage();
     else {
